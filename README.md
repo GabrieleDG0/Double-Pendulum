@@ -35,11 +35,17 @@ where b1 and b2 are viscous damping coefficients. The Euler-Lagrange equations l
 </p>
 Using a matrix formalism, the angular accelerations can be expressed as:
 <p align="center">
-<img width="384" height="48" alt="image" src="https://github.com/user-attachments/assets/3e72b033-46db-4dac-82c8-e1c616c3c2ec" />
+<img width="566" height="83" alt="image" src="https://github.com/user-attachments/assets/80d0c715-d816-4c7b-b89b-5285c97b2c5a" />
 </p>
 where M is the matrix that groups the coefficients of the accelerations, respectively the first two terms of each of the two differential equations written in system form. The matrix C groups the coefficients of the velocities, related to the Coriolis and centripetal effects, while the vector G contains the contributions due to gravity.
 
 Solving for the acceleration, useful for numerical implementation:
+<p align="center">
+  <img width="159" height="40" alt="image" src="https://github.com/user-attachments/assets/d3cd5360-56a6-4b47-bd56-ec96106afd11" />
+</p>
+
+thus:
+
 <p align="center">
 <img width="741" height="186" alt="image" src="https://github.com/user-attachments/assets/905460c3-a387-4ddf-9743-02225cd3f969" />
 </p>
