@@ -29,10 +29,12 @@ The equations of motion are derived using the Euler-Lagrange formalism:
 <p align="center">
 <img width="341" height="67" alt="image" src="https://github.com/user-attachments/assets/0fcaed2a-ff33-4a68-9106-ff4c6c177979" />
 </p>
-where b1 and b2 are viscous damping coefficients. The Euler-Lagrange equations lead to a coupled set of nonlinear second-order differential equations:
-<p align="center>
-<img width="858" height="107" alt="image" src="https://github.com/user-attachments/assets/7383edc2-fa5e-4440-8453-6359c3b2e541" />
+where b is viscous damping coefficient. The Euler-Lagrange equations lead to a coupled set of nonlinear second-order differential equations:
+
+<p align="center">
+<img width="548" height="61" alt="image" src="https://github.com/user-attachments/assets/0fd94a1d-b163-4468-a299-98132676f328" />
 </p>
+
 Using a matrix formalism, the angular accelerations can be expressed as:
 <p align="center">
 <img width="566" height="83" alt="image" src="https://github.com/user-attachments/assets/80d0c715-d816-4c7b-b89b-5285c97b2c5a" />
