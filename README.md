@@ -62,7 +62,7 @@ For numerical integration, the classical Runge-Kutta 4 method is applied to adva
 This method ensures a reliable balance between computational efficiency and accuracy, especially in the presence of the system's nonlinear and chaotic behavior. 
 
 ## Graphical Interface
-The simulator is implemented with Tkinter and features a responsive window that adapts to different screen sizes. The interface is divided into two main regions: a control panel and a visualization panel. The control panel allows adjustment of all physical parameters, initial conditions, and simulation parameters such as time step and friction coefficients. The visualization panel displays the pendulum animation, along with two auxiliary plots: angles versus time and energy versus time.
+The simulator is implemented with Tkinter and features a responsive window that adapts to different screen sizes. The interface is divided into two main regions: a control panel and a visualization panel. The control panel allows adjustment of all physical parameters, initial conditions, and simulation parameters such as time step, the friction coefficients, masses, lenghts and angles. The visualization panel displays the pendulum animation, along with two auxiliary plots: angles versus time and energy versus time.
 
 <img width="872" height="1016" alt="2" src="https://github.com/user-attachments/assets/7ea62775-1ad8-4961-914e-2c0daf9a8cb7" />
 
