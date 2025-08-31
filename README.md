@@ -78,4 +78,4 @@ The combination of real-time animation, angle diagrams and energy monitoring all
 **This simulator represents a bridge between theoretical physics, applied mathematics, and computational implementation, making it suitable for educational, research, and exploratory purposes.**
 
 ## Contributions
-If you ind any bugs, errors or anything else, feel free to open an issue!
+If you find any bugs, errors or anything else, feel free to open an issue!
