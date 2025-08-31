@@ -26,7 +26,7 @@ The equations of motion are derived using the Euler-Lagrange formalism:
 
 <img width="341" height="67" alt="image" src="https://github.com/user-attachments/assets/0fcaed2a-ff33-4a68-9106-ff4c6c177979" />
 
-where b1 and b2 are viscous damping coefficients. The Euler-Lagrange equations led to a coupled set of nonlinear second-order differential equations:
+where b1 and b2 are viscous damping coefficients. The Euler-Lagrange equations lead to a coupled set of nonlinear second-order differential equations:
 
 <img width="858" height="107" alt="image" src="https://github.com/user-attachments/assets/7383edc2-fa5e-4440-8453-6359c3b2e541" />
 
@@ -37,13 +37,14 @@ Using a matrix formalism, the angular accelerations can be expressed as:
 where M is the matrix that groups the coefficients of the accelerations, respectively the first two terms of each of the two differential equations written in system form. The matrix C groups the coefficients of the velocities, related to the Coriolis and centripetal effects, while the vector G contains the contributions due to gravity.
 
 Solving for the acceleration, useful for numerical implementation:
+
 <img width="741" height="186" alt="image" src="https://github.com/user-attachments/assets/905460c3-a387-4ddf-9743-02225cd3f969" />
 
 It is important to note that the explicit form of the accelerations may appear different in some educational texts or books. In fact, the terms are often rewritten by means of algebraic simplifications, collected in different ways or normalised with respect to lengths, masses or numerical constants to obtain more compact or didactic denominators. However, the representation proposed here is formally correct, and above all, directly derivable from the matrix formalism and the previous Euler-Lagrange equations, of
 consequence fully verifiable. 
 
 ## Numerical integration
-For numerical integration, the classical Runge-Kutta 4 method is applied to advance the state vector 𝑦 over discrete time steps Δt (editable in the GUI). The higher the time step, the higher the fluidity of the animation but the lower the physical accuracy. The lower the time step, the lower the fluidity of the animation but the higher the realistic accuracy of the simulation. The time step already set (0.02) is a good compromise:
+For numerical integration, the classical Runge-Kutta 4 method is applied to advance the state vector 𝑦 over discrete time steps Δt (editable in the GUI). The higher the time step, the smoother the animation, but the lower the physical accuracy. Conversely, the lower the time step, the less smooth the animation, but the more physically accurate the simulation. The current time step (0.02) is a good compromise:
 
 <img width="352" height="225" alt="image" src="https://github.com/user-attachments/assets/5a6d2003-2d3c-4fbc-8fe0-1e47b1f11095" />
 
