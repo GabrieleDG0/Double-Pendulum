@@ -7,47 +7,47 @@ In this project, a double pendulum simulator is implemented using Lagrangian mec
 
 ## Physical and Mathematical model
 The double pendulum consists of two rigid rods, each with a concentrated mass at its end, connected serially with the first rod pivoted to a fixed point. The system is governed by Lagrangian mechanics, where the Lagrangian L is the difference between the kinetic energy T and the potential energy V:
-
-<img width="135" height="50" alt="image" src="https://github.com/user-attachments/assets/47f0d3aa-4b22-49db-a7f2-6b8d03175150" />
-
+<p align="center">
+  <img width="135" height="50" alt="image" src="https://github.com/user-attachments/assets/47f0d3aa-4b22-49db-a7f2-6b8d03175150" />
+</p>
 The kinetic energy accounts for the translational motion of both bobs, including the interaction between the two masses:
-
+<p align="center">
 <img width="592" height="67" alt="image" src="https://github.com/user-attachments/assets/2a906099-b9c0-41a9-baa0-ca460d7f2b1c" />
-
+</p>
 The potential energy is determined by the height of each mass in the gravitational field:
-
+<p align="center">
 <img width="341" height="45" alt="image" src="https://github.com/user-attachments/assets/0c2f2a96-17e7-4009-8053-972848691b69" />
-
+</p>
 with cartesian coordinates:
-
+<p align="center">
 <img width="353" height="75" alt="image" src="https://github.com/user-attachments/assets/5dbd8dbf-1a5e-4db0-84a0-345422ffb72f" />
-
+</p>
 The equations of motion are derived using the Euler-Lagrange formalism:
-
+<p align="center">
 <img width="341" height="67" alt="image" src="https://github.com/user-attachments/assets/0fcaed2a-ff33-4a68-9106-ff4c6c177979" />
-
+</p>
 where b1 and b2 are viscous damping coefficients. The Euler-Lagrange equations lead to a coupled set of nonlinear second-order differential equations:
-
+<p align="center>
 <img width="858" height="107" alt="image" src="https://github.com/user-attachments/assets/7383edc2-fa5e-4440-8453-6359c3b2e541" />
-
+</p>
 Using a matrix formalism, the angular accelerations can be expressed as:
-
+<p align="center">
 <img width="384" height="48" alt="image" src="https://github.com/user-attachments/assets/3e72b033-46db-4dac-82c8-e1c616c3c2ec" />
-
+</p>
 where M is the matrix that groups the coefficients of the accelerations, respectively the first two terms of each of the two differential equations written in system form. The matrix C groups the coefficients of the velocities, related to the Coriolis and centripetal effects, while the vector G contains the contributions due to gravity.
 
 Solving for the acceleration, useful for numerical implementation:
-
+<p align="center">
 <img width="741" height="186" alt="image" src="https://github.com/user-attachments/assets/905460c3-a387-4ddf-9743-02225cd3f969" />
-
+</p>
 It is important to note that the explicit form of the accelerations may appear different in some educational texts or books. In fact, the terms are often rewritten by means of algebraic simplifications, collected in different ways or normalised with respect to lengths, masses or numerical constants to obtain more compact or didactic denominators. However, the representation proposed here is formally correct, and above all, directly derivable from the matrix formalism and the previous Euler-Lagrange equations, of
 consequence fully verifiable. 
 
 ## Numerical integration
 For numerical integration, the classical Runge-Kutta 4 method is applied to advance the state vector 𝑦 over discrete time steps Δt (editable in the GUI). The higher the time step, the smoother the animation, but the lower the physical accuracy. Conversely, the lower the time step, the less smooth the animation, but the more physically accurate the simulation. The current time step (0.02) is a good compromise:
-
+<p align="center">
 <img width="352" height="225" alt="image" src="https://github.com/user-attachments/assets/5a6d2003-2d3c-4fbc-8fe0-1e47b1f11095" />
-
+</p>
 This method ensures a reliable balance between computational efficiency and accuracy, especially in the presence of the system's nonlinear and chaotic behavior. 
 
 ## Graphical Interface
