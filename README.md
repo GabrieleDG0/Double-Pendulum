@@ -19,11 +19,15 @@ The kinetic energy accounts for the translational motion of both bobs, including
 </p>
 The potential energy is determined by the height of each mass in the gravitational field:
 <p align="center">
-<img width="341" height="45" alt="image" src="https://github.com/user-attachments/assets/0c2f2a96-17e7-4009-8053-972848691b69" />
+<img width="392" height="51" alt="image" src="https://github.com/user-attachments/assets/8fb68a24-f049-47ef-9744-68c073990738" />
 </p>
 with cartesian coordinates:
 <p align="center">
 <img width="353" height="75" alt="image" src="https://github.com/user-attachments/assets/5dbd8dbf-1a5e-4db0-84a0-345422ffb72f" />
+</p>
+The Lagrangian of the system L = T - V:
+<p align="center">
+<img width="560" height="97" alt="image" src="https://github.com/user-attachments/assets/9628c716-dbf3-4975-8b6e-97c961d5c04b" />
 </p>
 The equations of motion are derived using the Euler-Lagrange formalism:
 <p align="center">
@@ -32,34 +36,45 @@ The equations of motion are derived using the Euler-Lagrange formalism:
 where b is viscous damping coefficient. The Euler-Lagrange equations lead to a coupled set of nonlinear second-order differential equations:
 
 <p align="center">
-<img width="548" height="61" alt="image" src="https://github.com/user-attachments/assets/0fd94a1d-b163-4468-a299-98132676f328" />
+<img width="698" height="87" alt="image" src="https://github.com/user-attachments/assets/df7f2588-b1a5-41ae-a375-16ed816d904b" />
 </p>
 
 Using a matrix formalism, the angular accelerations can be expressed as:
 <p align="center">
-<img width="566" height="83" alt="image" src="https://github.com/user-attachments/assets/80d0c715-d816-4c7b-b89b-5285c97b2c5a" />
+<img width="789" height="119" alt="image" src="https://github.com/user-attachments/assets/fe71f428-1451-482b-a14e-5bf3292f1c96" />
 </p>
 where M is the matrix that groups the coefficients of the accelerations, respectively the first two terms of each of the two differential equations written in system form. The matrix C groups the coefficients of the velocities, related to the Coriolis and centripetal effects, while the vector G contains the contributions due to gravity.
 
 Solving for the acceleration, useful for numerical implementation:
 <p align="center">
-  <img width="159" height="40" alt="image" src="https://github.com/user-attachments/assets/d3cd5360-56a6-4b47-bd56-ec96106afd11" />
+  <img width="206" height="55" alt="image" src="https://github.com/user-attachments/assets/c6e3adca-fbad-4765-82cf-0b65959bfa88" />
 </p>
 
 thus:
 
 <p align="center">
-<img width="741" height="186" alt="image" src="https://github.com/user-attachments/assets/905460c3-a387-4ddf-9743-02225cd3f969" />
+<img width="933" height="238" alt="image" src="https://github.com/user-attachments/assets/0e867252-2b19-4e7f-97d9-c1d757a102f0" />
 </p>
 It is important to note that the explicit form of the accelerations may appear different in some educational texts or books. In fact, the terms are often rewritten by means of algebraic simplifications, collected in different ways or normalised with respect to lengths, masses or numerical constants to obtain more compact or didactic denominators. However, the representation proposed here is formally correct, and above all, directly derivable from the matrix formalism and the previous Euler-Lagrange equations, of
 consequence fully verifiable. 
 
 ## Numerical integration
-For numerical integration, the classical Runge-Kutta 4 method is applied to advance the state vector 𝑦 over discrete time steps Δt (editable in the GUI). The higher the time step, the smoother the animation, but the lower the physical accuracy. Conversely, the lower the time step, the less smooth the animation, but the more physically accurate the simulation. The current time step (0.02) is a good compromise:
+The 4th-order Runge-Kutta is a numerical further, in particular a four-stage explicit integration method that combines several evaluations of the f-function in the step to achieve higher
+precision. Four increments (or slopes) are calculated at each interval h: 
 <p align="center">
-<img width="352" height="225" alt="image" src="https://github.com/user-attachments/assets/5a6d2003-2d3c-4fbc-8fe0-1e47b1f11095" />
+<img width="288" height="189" alt="image" src="https://github.com/user-attachments/assets/7b01dc0a-98c9-46bf-bbaa-b054022d7c59" />
 </p>
-This method ensures a reliable balance between computational efficiency and accuracy, especially in the presence of the system's nonlinear and chaotic behavior. 
+The next step approximation is obtained as a weighted combination of these values:
+<p align="center">
+<img width="356" height="66" alt="image" src="https://github.com/user-attachments/assets/64d7f441-07c4-47f8-aa23-a067525c727c" />
+</p>
+The higher the time step, the smoother the animation, but the lower the physical accuracy. Conversely, the lower the time step, the less smooth the animation, but the more physically accurate the simulation. The current time step (0.02) is a good compromise.
+In practical terms, RK4 achieves high accuracy with a much smaller number of steps than Euler method. The disadvantage is that it requires four times as many evaluations of the function
+f per step (4 steps instead of 1), but on the whole this additional cost is compensated for by the possibility of using considerably larger h. The RK4 method is in fact considered an excellent compromise between accuracy, computational cost and stability, even if it is more expensive per step. 
+Graphical RK4 on approximating the blue function:
+<p align="center">
+<img width="453" height="460" alt="image" src="https://github.com/user-attachments/assets/5d5ae645-3833-44f9-8029-556793a65177" />
+</p>
 
 ## Graphical Interface
 The simulator is implemented with Tkinter and features a responsive window that adapts to different screen sizes. The interface is divided into two main regions: a control panel and a visualization panel. The control panel allows adjustment of all physical parameters, initial conditions, and simulation parameters such as time step, the friction coefficients, masses, lenghts and angles. The visualization panel displays the pendulum animation, along with two auxiliary plots: angles versus time and energy versus time.
