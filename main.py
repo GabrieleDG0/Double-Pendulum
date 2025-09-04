@@ -107,6 +107,9 @@ class PhysicsModel:
         y2 = y1 - self.l2 * np.cos(theta2)  # y2 = y1 - l2 * cos(theta2)
 
         # Potential Energy V
+        # In most textbooks the formula for V is equal to -(m1 + m2)*g*l1*cos(theta1) - m2*g*l2*cos(theta2), where V=0 is taken at the pivot point.
+        # In this simulator, the potential energy V is calculated with respect to the lowest possible point of each bob's swing (where V = 0). This ensures V is always non-negative.
+        # Consequently we should add l1 and l2 to the classical potential energy formula
         # V = m1 * g * (y1 + l1) + m2 * g * (y2 + l1 + l2)
         potential = self.m1 * self.g * (y1 + self.l1) + self.m2 * self.g * (y2 + self.l1 + self.l2)
 
@@ -500,4 +503,5 @@ class DoublePendulumSimulator:
 
 if __name__ == "__main__":
     simulator = DoublePendulumSimulator()
+
     simulator.run()
