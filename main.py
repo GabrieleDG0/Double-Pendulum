@@ -14,7 +14,6 @@ from collections import deque
 # 1. PHYSICAL-MATHEMATICAL MODEL
 # ---------------------------------------------------------------------------- #
 class PhysicsModel:
-
     """
     Contains the physical and numerical model.
     Implements the equations of motion for a double pendulum using Lagrangian mechanics and integrates them using RK4.
@@ -80,12 +79,12 @@ class PhysicsModel:
         y = state
 
         # Compute k1, k2, k3, k4 steps
-        k1 = dt * f(y)       
+        k1 = dt * f(y)        
         k2 = dt * f(y + 0.5 * k1) 
         k3 = dt * f(y + 0.5 * k2)  
         k4 = dt * f(y + k3)  
 
-        # Standard RK4 integration: y_{n+1} = y_n + (k1 + 2*k2 + 2*k3 + k4)/6   
+        # Standard RK4 integration y_{n+1} = y_n + (k1 + 2*k2 + 2*k3 + k4)/6 
         return y + (k1 + 2 * k2 + 2 * k3 + k4) / 6  # Next state
 
     def compute_energies(self, state):
@@ -93,14 +92,10 @@ class PhysicsModel:
         theta1, omega1, theta2, omega2 = state
 
         # Kinetic Energy T
-        # T1 = 1/2 * m1 * (l1 * omega1)^2
         T1 = 0.5 * self.m1 * (self.l1 * omega1)**2  
-
-        # T2 = 1/2 * m2 * (l1 * omega1)^2 + (l2 * omega2)^2 + 2 * l1 * l2 * omega1 * omega2 * cos(theta1 - theta2)
         T2 = 0.5 * self.m2 * ((self.l1 * omega1)**2 + (self.l2 * omega2)**2 +
-                               2 * self.l1 * self.l2 * omega1 * omega2 * np.cos(theta1 - theta2))  
+                              2 * self.l1 * self.l2 * omega1 * omega2 * np.cos(theta1 - theta2))  
 
-        # Total kinetic energy                       
         kinetic = T1 + T2   
 
         y1 = -self.l1 * np.cos(theta1)      # y1 = -l1 * cos(theta1)
@@ -110,7 +105,6 @@ class PhysicsModel:
         # In most textbooks the formula for V is equal to -(m1 + m2)*g*l1*cos(theta1) - m2*g*l2*cos(theta2), where V=0 is taken at the pivot point.
         # In this simulator, the potential energy V is calculated with respect to the lowest possible point of each bob's swing (where V = 0). This ensures V is always non-negative.
         # Consequently we should add l1 and l2 to the classical potential energy formula
-        # V = m1 * g * (y1 + l1) + m2 * g * (y2 + l1 + l2)
         potential = self.m1 * self.g * (y1 + self.l1) + self.m2 * self.g * (y2 + self.l1 + self.l2)
 
         return kinetic, potential, kinetic + potential
@@ -123,6 +117,7 @@ class DoublePendulumSimulator:
     Manages the entire application: the GUI, controls, and animation loop.
     Functions:
         - __init__              -> Initialize simulation, state and GUI elements
+        - wrap_angle
         - setup_gui             -> Initialize simulation and main GUI elements
         - setup_controls        -> Create and layout control elements
         - create_param_control  -> Create labeled scale and entry widgets for parameters
@@ -143,24 +138,24 @@ class DoublePendulumSimulator:
         # Initial [theta1, omega1, theta2, omega2]
         self.initial_state = np.array([np.pi / 2, 0.0, np.pi / 2, 0.0]) 
         self.state = self.initial_state.copy()
-        self.dt = 0.02                                           # Time step [s]
-        self.time = 0.0                                          # Simulation time [s]
-        self.running = True                                      # Running flag
-        self.show_trails = True                                  # Display trails flag
+        self.dt = 0.02                                               # Time step [s]
+        self.time = 0.0                                              # Simulation time [s]
+        self.running = True                                          # Running flag
+        self.show_trails = True                                      # Display trails flag
 
         # Trail visualization
-        self.max_trail_length = 500                              # Maximum length of the trail
-        self.trail1 = deque(maxlen=self.max_trail_length)        # First bob trail
-        self.trail2 = deque(maxlen=self.max_trail_length)        # Second bob trail
+        self.max_trail_length = 500                                  # Maximum length of the trail
+        self.trail1 = deque(maxlen=self.max_trail_length)            # First bob trail
+        self.trail2 = deque(maxlen=self.max_trail_length)            # Second bob trail
 
         # Data storage for plotting
-        self.max_data_points = int(20 / self.dt)                 # Max data points for plots
-        self.time_data = deque(maxlen=self.max_data_points)      # Time series
-        self.theta1_data = deque(maxlen=self.max_data_points)    # Angle theta1 over time (wrapped)
-        self.theta2_data = deque(maxlen=self.max_data_points)    # Angle theta2 over time (wrapped)
-        self.kinetic_data = deque(maxlen=self.max_data_points)   # Kinetic energy over time
-        self.potential_data = deque(maxlen=self.max_data_points) # Potential energy over time
-        self.total_data = deque(maxlen=self.max_data_points)     # Total energy over time
+        self.max_data_points = int(20 / self.dt)                     # Max data points for plots
+        self.time_data = deque(maxlen=self.max_data_points)          # Time series
+        self.theta1_data = deque(maxlen=self.max_data_points)        # Angle theta1
+        self.theta2_data = deque(maxlen=self.max_data_points)        # Angle theta2
+        self.kinetic_data = deque(maxlen=self.max_data_points)       # Kinetic energy
+        self.potential_data = deque(maxlen=self.max_data_points)     # Potential energy
+        self.total_data = deque(maxlen=self.max_data_points)         # Total energy
 
         # Initialize GUI and apply changes
         self.setup_gui()
@@ -176,34 +171,29 @@ class DoublePendulumSimulator:
 
     def setup_gui(self):
         """ Configure the graphical interface """
-
-        # Main window title and size
         self.root = tk.Tk()
         self.root.title("Double Pendulum Simulation")
-        self.root.state("zoomed") # On Windows
-        # self.root.attributes("-fullscreen", True)  # On Linux or Mac
-
+        self.root.state("zoomed") 
 
         # Main frame
-        main_frame = ttk.Frame(self.root) # Frame for all GUI elements
+        main_frame = ttk.Frame(self.root) 
         main_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Control frame
         control_frame = ttk.LabelFrame(main_frame, text="Controls", padding=10)
         control_frame.pack(side=tk.LEFT, fill=tk.Y, padx=(0, 5))
 
-        self.setup_controls(control_frame)  # Setup control elements, sliders and buttons
+        self.setup_controls(control_frame)  
 
         # Visualization frame
         viz_frame = ttk.Frame(main_frame)
         viz_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
-        self.setup_visualization(viz_frame) # Setup matplotlib plot elements
+        self.setup_visualization(viz_frame) 
 
     def setup_controls(self, parent):
         """ Configure the control elements of the interface. """
-
-        row = 0 # Grid row for layout
+        row = 0 
 
         # Simulation controls
         sim_frame = ttk.LabelFrame(parent, text="Simulation", padding=5)
@@ -219,8 +209,7 @@ class DoublePendulumSimulator:
 
         # Toggle trail visualization
         self.trail_var = tk.BooleanVar(value=self.show_trails)
-        ttk.Checkbutton(sim_frame, text="Show Trails",
-                        variable=self.trail_var, command=self.toggle_trails).pack(pady=2)
+        ttk.Checkbutton(sim_frame, text="Show Trails", variable=self.trail_var, command=self.toggle_trails).pack(pady=2)
 
         # Physical parameters
         params_frame = ttk.LabelFrame(parent, text="Physical Parameters", padding=5)
@@ -242,8 +231,8 @@ class DoublePendulumSimulator:
         self.create_param_control(params_frame, "Length 1 [m]:", self.l1_var, 0.1, 2.0)
         self.create_param_control(params_frame, "Length 2 [m]:", self.l2_var, 0.1, 2.0)
         self.create_param_control(params_frame, "Gravity [m/s²]:", self.g_var, 0.1, 20.0)
-        self.create_param_control(params_frame, "Friction 1 [N·m·s/rad]:", self.b1_var, 0.0, 1.0)
-        self.create_param_control(params_frame, "Friction 2 [N·m·s/rad]:", self.b2_var, 0.0, 1.0)
+        self.create_param_control(params_frame, "Friction 1:", self.b1_var, 0.0, 1.0)
+        self.create_param_control(params_frame, "Friction 2:", self.b2_var, 0.0, 1.0)
 
         # Initial conditions frame
         initial_frame = ttk.LabelFrame(parent, text="Initial Conditions", padding=5)
@@ -271,9 +260,8 @@ class DoublePendulumSimulator:
         self.dt_var = tk.DoubleVar(value=self.dt)
         self.create_param_control(sim_params_frame, "Time Step dt [s]:", self.dt_var, 0.001, 0.04)
 
-        # Apply changes button (recreate physics model and reset)
-        ttk.Button(parent, text="Apply and Reset",
-                   command=self.apply_changes).grid(row=row, column=0, sticky="ew", pady=10)
+       # Apply changes button (recreate physics model and reset)
+        ttk.Button(parent, text="Apply and Reset", command=self.apply_changes).grid(row=row, column=0, sticky="ew", pady=10)
 
     def create_param_control(self, parent, label, var, min_val, max_val):
         """ Create a labeled control with sliders and entry fields """
@@ -284,33 +272,28 @@ class DoublePendulumSimulator:
 
         # Label
         ttk.Label(frame, text=label).pack(anchor=tk.W)
-
+        
         # Sub-frame for the slider and entry
         sub_frame = ttk.Frame(frame)
         sub_frame.pack(fill=tk.X)
-
-        # Horizontal slider (scale) for adjusting the parameter
-        scale = ttk.Scale(sub_frame, from_=min_val, to=max_val,
-                          variable=var, orient=tk.HORIZONTAL)
+        
+        # Horizontal slider (scale) for adjusting the parameter        
+        scale = ttk.Scale(sub_frame, from_=min_val, to=max_val, variable=var, orient=tk.HORIZONTAL)
         scale.pack(fill=tk.X, side=tk.LEFT, expand=True)
-
+        
         # Entry field for precise parameter value
         entry = ttk.Entry(sub_frame, textvariable=var, width=8)
         entry.pack(side=tk.RIGHT, padx=(5, 0))
 
     def setup_visualization(self, parent):
         """ Set up the graphical visualization with subplot2grid """
-
-        # Create figure and subplots
         self.fig = plt.figure(figsize=(12, 8))
-
-        # Define subplots with grid layout
+        
         self.ax_pendulum = plt.subplot2grid((2, 2), (0, 0), rowspan=2)  # Pendulum plot
         self.ax_angles = plt.subplot2grid((2, 2), (0, 1))               # Angles vs time plot
         self.ax_energy = plt.subplot2grid((2, 2), (1, 1))               # Energy vs time plot
         plt.tight_layout(pad=4.0)
 
-        # Figure into Tkinter
         self.canvas = FigureCanvasTkAgg(self.fig, parent)
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
@@ -319,13 +302,20 @@ class DoublePendulumSimulator:
     def setup_plot_elements(self):
         """ Initialize plot elements """
 
-        # Pendulum plot with grid
+        # Pendulum plot
         self.ax_pendulum.set_title('Double Pendulum')
         self.ax_pendulum.grid(True, alpha=0.3)
 
-        # Bob and connecting lines
-        self.line1, = self.ax_pendulum.plot([], [], 'o-', linewidth=3, markersize=8, color='blue')
-        self.line2, = self.ax_pendulum.plot([], [], 'o-', linewidth=3, markersize=8, color='red')
+        # --- FIX: Separate Rods and Bobs ---
+        # 1. Rods (Lines only, black)
+        self.rod1, = self.ax_pendulum.plot([], [], '-', linewidth=2, color='black')
+        self.rod2, = self.ax_pendulum.plot([], [], '-', linewidth=2, color='black')
+
+        # 2. Bobs (Markers only, colored)
+        # zorder=3 ensures bobs are drawn ON TOP of the rods
+        self.bob1, = self.ax_pendulum.plot([], [], 'o', color='blue', zorder=3)
+        self.bob2, = self.ax_pendulum.plot([], [], 'o', color='red', zorder=3)
+        # -----------------------------------
 
         # Trail lines
         self.trail1_line, = self.ax_pendulum.plot([], [], '-', alpha=0.6, color='blue')
@@ -333,71 +323,71 @@ class DoublePendulumSimulator:
 
         self.ax_pendulum.set_aspect('equal', adjustable='box')
 
-        # Angles vs Time plot
+        # Angles plot
         self.ax_angles.set_title('Angles vs Time (Wrapped [-π, π])')
         self.ax_angles.set_ylabel('Angle (radians)')
         self.ax_angles.grid(True, alpha=0.3)
-        
-        # Set fixed y-axis limits for wrapped angles
         self.ax_angles.set_ylim(-np.pi - 0.2, np.pi + 0.2)
-
-        # Lines for θ₁ and θ₂
         self.theta1_line, = self.ax_angles.plot([], [], label='θ₁', color='blue')
         self.theta2_line, = self.ax_angles.plot([], [], label='θ₂', color='red')
-        self.ax_angles.legend() # Show legend
+        self.ax_angles.legend()
 
-        # Energy vs Time plot
+        # Energy plot
         self.ax_energy.set_title('Energy vs Time')
         self.ax_energy.set_xlabel('Time (s)')
         self.ax_energy.set_ylabel('Energy (J)')
         self.ax_energy.grid(True, alpha=0.3)
-
-        # Lines for kinetic, potential, and total energy
         self.kinetic_line, = self.ax_energy.plot([], [], label='Kinetic', color='green')
         self.potential_line, = self.ax_energy.plot([], [], label='Potential', color='orange')
         self.total_line, = self.ax_energy.plot([], [], label='Total', color='purple', lw=2)
-        self.ax_energy.legend() # Show legend
+        self.ax_energy.legend()
 
     def animation_update(self, frame):
         """ Update function called by FuncAnimation for each frame """
-
+        
         # Step simulation if running
         if self.running:
             self.state = self.physics.rk4_step(self.state, self.dt) # RK4 integration step
             self.time += self.dt                                    # Increment simulation time by dt
 
-        # Get current pendulum positions
         (x1, y1), (x2, y2) = self.physics.get_positions(self.state)
         
-        # Update pendulum lines
-        self.line1.set_data([0, x1], [0, y1])                       # Line 1 from origin to first bob
-        self.line1.set_markersize(8 * np.sqrt(self.physics.m1))     # Circle radius scaled by mass
-        self.line2.set_data([x1, x2], [y1, y2])                     # Line 2 from first bob to second bob
-        self.line2.set_markersize(8 * np.sqrt(self.physics.m2))     # Circle radius scaled by mass
+        # Update Rods
+        self.rod1.set_data([0, x1], [0, y1])
+        self.rod2.set_data([x1, x2], [y1, y2])
+
+        # Update Bobs (Size depends on their mass)
+        self.bob1.set_data([x1], [y1])
+        self.bob1.set_markersize(8 * np.sqrt(self.physics.m1)) 
+
+        self.bob2.set_data([x2], [y2])
+        self.bob2.set_markersize(8 * np.sqrt(self.physics.m2)) 
+        # --------------------------------------------
 
         # Update trails if running and enabled
         if self.running and self.show_trails:
             # Append positions to trails
             self.trail1.append((x1, y1))
             self.trail2.append((x2, y2))
+
             # Update trail line if enough length
-            if len(self.trail1) > 1:
+            if len(self.trail1) > 1: 
                 self.trail1_line.set_data(*zip(*self.trail1))
             if len(self.trail2) > 1: 
                 self.trail2_line.set_data(*zip(*self.trail2))
 
         # Update angles and energy data
         if self.running:
-            # Wrap angles to [-π, π] range for display (like MyPhysicsLab)
+            # Wrap angles to [-pi, pi] range for display
             wrapped_theta1 = self.wrap_angle(self.state[0])
             wrapped_theta2 = self.wrap_angle(self.state[2])
             
             # Append time series and wrapped angular positions data
-            self.time_data.append(self.time)                       
-            self.theta1_data.append(wrapped_theta1)                  
-            self.theta2_data.append(wrapped_theta2)                  
+            self.time_data.append(self.time)                        
+            self.theta1_data.append(wrapped_theta1)                   
+            self.theta2_data.append(wrapped_theta2)                   
             
-            ke, pe, te = self.physics.compute_energies(self.state)  # Compute energies
+            ke, pe, te = self.physics.compute_energies(self.state)  
             
             # Append energies
             self.kinetic_data.append(ke)
@@ -419,21 +409,22 @@ class DoublePendulumSimulator:
             if len(self.time_data) > 1:
                 self.ax_angles.set_xlim(min(self.time_data), max(self.time_data))
         
-        # Return all updated data for FuncAnimation
-        return (self.line1, self.line2, self.trail1_line, self.trail2_line,
+        # Return all artists to re-draw
+        return (self.rod1, self.rod2, self.bob1, self.bob2, 
+                self.trail1_line, self.trail2_line,
                 self.theta1_line, self.theta2_line, self.kinetic_line,
                 self.potential_line, self.total_line)
 
     def apply_changes(self):
         """ Apply changes from the control elements and reset the simulation """
-
+        
         # Update dt from the slider
         self.dt = self.dt_var.get()
 
         # Recreate the physical model with the updated parameters
         self.physics = PhysicsModel(
             m1=self.m1_var.get(), l1=self.l1_var.get(), # mass and length of first pendulum
-            m2=self.m2_var.get(), l2=self.l2_var.get(), # mass and length of second pendulum        
+            m2=self.m2_var.get(), l2=self.l2_var.get(), # mass and length of second pendulum   
             g=self.g_var.get(),                         # g
             b1=self.b1_var.get(), b2=self.b2_var.get()  # damping coefficients
         )
@@ -476,7 +467,7 @@ class DoublePendulumSimulator:
         if not self.running: self.toggle_pause()
 
     def toggle_pause(self):
-        """ Toggle the running state Resume <-> Pause """
+        """ Toggle the running state """
         self.running = not self.running
         self.pause_btn.config(text="Resume" if not self.running else "Pause")
         
@@ -498,10 +489,8 @@ class DoublePendulumSimulator:
             blit=True,
             cache_frame_data=False
         )
-
         self.root.mainloop()
 
 if __name__ == "__main__":
     simulator = DoublePendulumSimulator()
-
     simulator.run()
