@@ -1,6 +1,7 @@
 # Double Pendulum - Lagrangian Mechanics RK4 Integration
 
 **Note: you can find and .exe file on the Release section ready to use!**
+
 **Note: While the project is fully functional, the current code requires refactoring**
 
 ## Introduction
