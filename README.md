@@ -7,7 +7,8 @@
 ## Introduction
 In this project, a double pendulum simulator is implemented using Lagrangian mechanics and a 4th order Runge-Kutta integrator (RK4). The simulation is presented in a graphical interface with real-time animation and plots for angular positions and energy evolution.
 
-<img width="1919" height="1016" alt="dp-simulator" src="https://github.com/user-attachments/assets/2157765e-9cce-4864-bd38-75ee9c911e18" />
+<img width="1919" height="1018" alt="image" src="https://github.com/user-attachments/assets/12bf6ae1-afa0-4e5d-b05f-bdcaf79dc476" />
+
 
 ## Physical and Mathematical model
 The double pendulum consists of two rigid rods, each with a concentrated mass at its end, connected serially with the first rod pivoted to a fixed point. The system is governed by Lagrangian mechanics, where the Lagrangian L is the difference between the kinetic energy T and the potential energy V:
