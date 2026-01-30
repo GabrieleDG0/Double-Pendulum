@@ -1,10 +1,10 @@
-# WORK IN PROGRESS
+# Double Pendulum - Lagrangian Mechanics RK4 Integration
 
+**Note: you can find and .exe file on the Release section ready to use!**
+**Note: While the project is fully functional, the current code requires refactoring**
 
 ## Introduction
 In this project, a double pendulum simulator is implemented using Lagrangian mechanics and a 4th order Runge-Kutta integrator (RK4). The simulation is presented in a graphical interface with real-time animation and plots for angular positions and energy evolution.
-
-**Note: you can find and .exe file on the Release section ready to use!**
 
 <img width="1919" height="1016" alt="dp-simulator" src="https://github.com/user-attachments/assets/2157765e-9cce-4864-bd38-75ee9c911e18" />
 
